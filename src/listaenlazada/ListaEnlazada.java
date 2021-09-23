@@ -1,12 +1,12 @@
 package listaenlazada;
 
 import com.sun.istack.internal.NotNull;
-import interfaces.IEstructureOperations;
+import interfaces.IStructureOperations;
 import models.Nodo;
 
 import java.util.Comparator;
 
-public class ListaEnlazada<T> implements  IEstructureOperations<T>{
+public class ListaEnlazada<T> implements  IStructureOperations<T>{
     private Nodo inicio;
     private int size = 0;
 

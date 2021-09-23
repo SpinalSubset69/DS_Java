@@ -1,6 +1,6 @@
 package interfaces;
 
-public interface IEstructureOperations<T>{
+public interface IStructureOperations<T>{
 
     boolean IsVacia();
     void Transversa();

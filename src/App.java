@@ -3,19 +3,21 @@ import listaenlazada.ListaEnlazada;
 public class App {
     public static void main(String[] args) {
 
+        System.out.println("------------Ejemplo String------------");
         ListaEnlazada<String> lista = new ListaEnlazada<String>();
         lista.AgregarNodo("Luis");
         lista.AgregarNodo("Jessica");
         lista.AgregarNodo("Maradona");
         lista.AgregarNodo("Juan");
-        lista.AgregarNodo("Alab");
+        lista.AgregarNodo("Alan");
         lista.AgregarNodo("Pele");
         lista.Transversa();
         System.out.println("");
         lista.OrdenarBurbuja();
         lista.Transversa();
-        System.out.println("");
-        System.out.println(lista.BuscarPorReferencia(1));
+        System.out.println("\n");
+
+        System.out.println("------------Ejemplo Integer------------");
         ListaEnlazada<Integer> lst = new ListaEnlazada<Integer>();
         lst.AgregarNodo(10);
         lst.AgregarNodo(27);
