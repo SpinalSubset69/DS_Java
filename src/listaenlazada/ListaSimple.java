@@ -6,16 +6,16 @@ import models.Nodo;
 
 import java.util.Comparator;
 
-public class ListaEnlazada<T> implements  IStructureOperations<T>{
+public class ListaSimple<T> implements  IStructureOperations<T>{
     private Nodo inicio;
     private int size = 0;
 
-    public ListaEnlazada() {
+    public ListaSimple() {
         this.inicio = new Nodo();
         this.inicio.setSiguiente(null);
     }
 
-    public ListaEnlazada(T dato) {
+    public ListaSimple(T dato) {
         this.inicio = new Nodo();
         this.inicio.setDato(dato);
         this.inicio.setSiguiente((null));
@@ -33,7 +33,7 @@ public class ListaEnlazada<T> implements  IStructureOperations<T>{
 
         while(aux.getSiguiente() != null){
             aux = aux.getSiguiente();
-            System.out.print("[" + aux.getDato()+ "], ");
+            System.out.print(aux.getDato() + " ");
         }
     }
 
@@ -61,7 +61,7 @@ public class ListaEnlazada<T> implements  IStructureOperations<T>{
         if(pos == 0){
             aux = inicio;
             aux = aux.getSiguiente();
-            return (T)aux.getDato();
+            return (T)aux;
         }
         if(pos >= 1 && pos < this.size){
             aux = inicio;
@@ -69,20 +69,20 @@ public class ListaEnlazada<T> implements  IStructureOperations<T>{
                 aux = aux.getSiguiente();
                 cont ++;
             }
-            return (T)aux.getDato();
+            return (T)aux;
         }
         if(pos == this.size){
             aux = inicio;
             while (aux.getSiguiente() != null){
                 aux = aux.getSiguiente();
             }
-            return (T)aux.getDato();
+            return (T)aux;
         }
         return null;
     }
 
     @Override
-    public void EditarPorReferencia(int pos, T data) throws NullPointerException{
+    public boolean EditarPorReferencia(int pos, T data) throws NullPointerException{
         if(pos > this.size){
             throw new NullPointerException("Fuera del rango");
         }
@@ -92,7 +92,7 @@ public class ListaEnlazada<T> implements  IStructureOperations<T>{
             aux = inicio;
             aux = aux.getSiguiente();
             aux.setDato(data);
-            return;
+            return true;
         }
         if(pos >= 1 || pos <= size){
             aux = inicio;
@@ -104,7 +104,7 @@ public class ListaEnlazada<T> implements  IStructureOperations<T>{
                 cont ++;
             }
             aux.setDato(data);
-            return;
+            return true;
         }
         if(pos == size){
             aux = inicio;
@@ -112,10 +112,10 @@ public class ListaEnlazada<T> implements  IStructureOperations<T>{
                 aux = aux.getSiguiente();
             }
             aux.setDato(data);
-            return;
+            return true;
         }
 
-        System.out.println("No existe la posición");
+        return false;
     }
 
     @Override
@@ -133,41 +133,125 @@ public class ListaEnlazada<T> implements  IStructureOperations<T>{
             return;
         }
         if(pos >= 1 && pos <= size){
-            aux = inicio;
-            int cont = 0;
             //posicionamos el Nodo
-            Nodo temp = new Nodo();
-            temp = inicio;
-            while (cont <= pos ){
-                if(cont <= (pos - 1)){
-                    temp = temp.getSiguiente();
-                }
-                aux = aux.getSiguiente();
-                cont ++;
-            }
+            aux = (Nodo)this.BuscarPorReferencia(pos);
+            Nodo temp = (Nodo) this.BuscarPorReferencia(pos - 1);
             temp.setSiguiente(aux.getSiguiente());
             this.size--;
             return;
         }
         if(pos == size){
-            aux = inicio;
-            Nodo temp = new Nodo();
-            temp = inicio;
-            int cont = 0;
-            while(aux.getSiguiente() != null){
-                if(cont >= (size - 1)){
-                    //Referencia al nodo anterior
-                    temp = temp.getSiguiente();
-                }
-                aux = aux.getSiguiente();
-                cont ++;
-            }
-            temp.setSiguiente(null);
+            aux = (Nodo)this.BuscarPorReferencia(pos - 1);
+            aux.setSiguiente(null);
             this.size--;
             return;
         }
 
         System.out.println("No existe la posición");
+    }
+    public boolean ElminarPalabra(String palabra){
+        if(this.size == 0){
+            System.out.println("Lista Vacía");
+            return false;
+        }
+        Nodo aux = inicio;
+        Nodo temp = inicio;
+        int actual = 0;
+        while(aux.getSiguiente() != null){
+            aux = aux.getSiguiente();
+            if(aux.getDato().equals(palabra)){
+                temp = (Nodo)this.BuscarPorReferencia(actual == 0 ? actual : actual - 1);//Obtenemos el nodo anterior
+                //En caso de que la palabra esté al principio de la lista
+                if(actual == 0){
+                    inicio.setSiguiente(aux.getSiguiente());
+                    return true;
+                }
+                //Eliminamos la referencia al nodo auxiliar
+                temp.setSiguiente(aux.getSiguiente());
+                System.out.println(aux.getDato());
+                return true;
+            }
+            actual ++;
+        }
+       return false;
+    }
+
+    public T BinarySearch(int pos, String dataToFind){
+        this.OrdenarBurbuja();
+        int low = 0;
+        int high = this.size - 1;
+        int middle = (low + high) / 2;
+        while (low <= high){
+            Nodo guess = (Nodo)this.BuscarPorReferencia(middle);
+            if((String)guess.getDato() == dataToFind){
+                return (T)guess;
+            }
+            if(GetSizeBytesWord((String)guess.getDato()) > GetSizeBytesWord(dataToFind)){
+                high = middle - 1;
+            }else{
+                low = middle + 1;
+            }
+        }
+        return null;
+    }
+
+    public int GetSizeBytesWord(String word){
+        int sum = 0;
+        for(int i = 0; i < word.length(); i++){
+            sum += word.charAt(i);
+        }
+        return sum;
+    }
+
+    public boolean AgregarPorReferencia(int pos, String palabra) {
+        if(this.size == 0){
+            System.out.println("Lista Vacía");
+            return false;
+        }
+        Nodo aux = inicio;
+        if (pos == 0) {
+            aux = (Nodo) this.BuscarPorReferencia(pos);
+            Nodo new_nodo = new Nodo();
+            new_nodo.setSiguiente(aux);
+            new_nodo.setDato(palabra);
+            inicio.setSiguiente(new_nodo);
+            return true;
+        }
+
+        if(pos > 0 && pos < this.size){
+            Nodo temp = (Nodo)this.BuscarPorReferencia(pos - 1);
+            aux = (Nodo) this.BuscarPorReferencia(pos);
+            Nodo new_nodo = new Nodo();
+            new_nodo.setDato(palabra);
+            new_nodo.setSiguiente(aux);
+            temp.setSiguiente(new_nodo);
+            return true;
+        }
+
+        if (pos == this.size) {
+            Nodo new_nodo = new Nodo();
+            new_nodo.setSiguiente(null);
+            new_nodo.setDato(palabra);
+            Nodo temp = (Nodo) this.BuscarPorReferencia(pos);
+            temp.setSiguiente(new_nodo);
+            return true;
+        }
+        return  false;
+    }
+    public void EliminarTexto(){
+        this.inicio.setSiguiente(null);
+    }
+
+    public int ContarPalabraEnTexto(String palabra){
+        Nodo aux = inicio;
+        int cont = 0;
+        while (aux.getSiguiente() != null){
+            aux = aux.getSiguiente();
+            if(aux.getDato().equals(palabra)){
+                cont ++;
+            }
+        }
+        return cont;
     }
 
     @Override
